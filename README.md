@@ -6,8 +6,8 @@ To Use:
 * Use the keyboard shortcuts below
 
 Keys:
-* *Up* or *Double Click* or *F11* - Toggle full screen.
-* *Enter*/*Space*/*Right Arrow*/*Click* - Next Image
-* *Left Arrow* - Previous Image
-* *Delete* - Delete Image to Recycle Bin
-* *Down* - Minimize.
+* **Enter**/**Space**/**Right Arrow**/**Click**/**PgUp** - Next Image
+* **Left Arrow**/**PgDown** - Previous Image
+* **Up** or **Double Click** or **F11** - Toggle full screen.
+* **Down** - Minimize.
+* **Delete** - Delete Image to Recycle Bin
