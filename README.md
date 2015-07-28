@@ -1,9 +1,9 @@
 **Giffer: A Simple Gif Viewer**
 
 To Use:
-* Run application
-* Click the '...' button to change to a folder that exists.
-* Use the keyboard shortcuts below
+1 Run application
+2 Click the '...' button to change to a folder that exists.
+3 Use the keyboard shortcuts below
 
 Keys:
 * **Enter**/**Space**/**Right Arrow**/**Click**/**PgUp** - Next Image
