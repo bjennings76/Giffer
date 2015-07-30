@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Giffer"
         mc:Ignorable="d"
-        Title="The Giffer: A Simple Gif Viewer" Height="337.2" Width="465" StateChanged="Window_StateChanged" KeyUp="Window_KeyUp">
+        Title="The Giffer: A Simple Gif Viewer" Height="337.2" Width="465" StateChanged="Window_StateChanged" KeyUp="Window_KeyUp" Icon="icon.ico">
     <Grid>
-        <TextBox x:Name="txt_Directory" VerticalAlignment="Top" Margin="10,10,64.4,0" IsReadOnly="True"/>
+        <TextBox x:Name="txt_Directory" VerticalAlignment="Top" Margin="10,10,64.4,0" IsReadOnly="True" Focusable="False" Height="19"/>
         <Button x:Name="btn_ChangeDirectory" Content="..." VerticalAlignment="Top" Margin="0,10,10,0" HorizontalAlignment="Right" Width="50" Click="btn_ChangeDirectory_Click"/>
         <MediaElement x:Name="media" Margin="10,33,10,10" MediaEnded="image_MediaEnded" UnloadedBehavior="Manual" LoadedBehavior="Manual"/>
-        <Button x:Name="btn_Media" Margin="10,33,10,10" Opacity="0" MouseDoubleClick="btn_Media_MouseDoubleClick" Click="btn_Media_Click"/>
+        <Button x:Name="btn_Media" Margin="10,33,10,10" Opacity="0" MouseDoubleClick="btn_Media_MouseDoubleClick" Click="btn_Media_Click" Focusable="False"/>
     </Grid>
 </Window>
