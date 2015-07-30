@@ -85,15 +85,6 @@ namespace Giffer
             NextImage();
         }
 
-        private void btn_ChangeDirectory_Click(object sender, RoutedEventArgs e)
-        {
-            media.Source = Uri;
-            var dlg = new FolderBrowserDialog {SelectedPath = string.IsNullOrEmpty(Path) ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Gallery") : Path};
-            if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-            Path = dlg.SelectedPath;
-            Reset();
-        }
-
         private void LoadImage()
         {
             media.Visibility = Visibility.Visible;
@@ -113,6 +104,19 @@ namespace Giffer
             if (Images.Length == 0 || Images.All(i => i == null)) return;
             Image = Images.GetPrevious();
             while (Image == null) Image = Images.GetPrevious();
+        }
+
+        private void ToggleMinimized() { WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState.Minimized; }
+
+        private void ToggleFullscreen() { WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized; }
+
+        private void btn_ChangeDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            media.Source = Uri;
+            var dlg = new FolderBrowserDialog {SelectedPath = string.IsNullOrEmpty(Path) ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Gallery") : Path};
+            if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            Path = dlg.SelectedPath;
+            Reset();
         }
 
         private void image_MediaEnded(object sender, RoutedEventArgs e)
@@ -183,10 +187,6 @@ namespace Giffer
                     break;
             }
         }
-
-        private void ToggleMinimized() { WindowState = WindowState == WindowState.Minimized ? WindowState.Normal : WindowState.Minimized; }
-
-        private void ToggleFullscreen() { WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized; }
 
         private void btn_Media_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
