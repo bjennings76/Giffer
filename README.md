@@ -2,10 +2,10 @@
 
 To Use:
 * Run application
-* Click the '...' button to change to a folder that exists.
-* Use the keyboard shortcuts below
+* Click the '...' button to change folders.
+* Use shortcuts below
 
-Keys:
+Shortcuts:
 * **Space**/**Right Arrow**/**Click**/**PgUp** - Next Image
 * **Left Arrow**/**PgDown** - Previous Image
 * **Up Arrow**/**Enter**/**Double Click**/**F11** - Toggle full screen.
