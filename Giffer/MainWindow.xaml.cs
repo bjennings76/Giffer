@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -20,6 +21,7 @@ namespace Giffer
     public partial class MainWindow
     {
         private bool _switching;
+        private bool _autoPlay;
         private readonly Thickness _originalMediaMargin;
         private readonly Brush _originalBackground;
         private readonly Cursor _originalCursor;
@@ -36,21 +38,39 @@ namespace Giffer
         }
         private string _path;
 
-        private FileInfo[] Images
+        private List<FileInfo> Images
         {
             get
             {
-                try {
-                    return _images ?? (_images = string.IsNullOrEmpty(Path) ? new FileInfo[0] : new DirectoryInfo(Path).GetFiles("*.gif", SearchOption.AllDirectories));
+                try
+                {
+                    if (_images != null) return _images;
+                    if (string.IsNullOrEmpty(Path)) return _images = new List<FileInfo>();
+                    _images = GetImagesFromDirectory(new DirectoryInfo(Path));
+                    return _images;
                 }
                 catch (Exception e) {
                     MessageBox.Show("Error gathering images:\n" + e.Message, "Giffer Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return new FileInfo[0];
+                    return new List<FileInfo>();
                 }
             }
         }
 
-        private FileInfo[] _images;
+        private List<FileInfo> GetImagesFromDirectory(DirectoryInfo dir)
+        {
+            var list = new List<FileInfo>();
+            try
+            {
+                list.AddRange(dir.GetFiles("*.gif"));
+                foreach (var subDir in dir.GetDirectories()) list.AddRange(GetImagesFromDirectory(subDir));
+            }
+            catch (Exception e) {
+                Console.WriteLine("Error gathering files for " + dir.FullName + ":\n" + e.Message);
+            }
+            return list;
+        }
+
+        private List<FileInfo> _images;
 
         private FileInfo Image
         {
@@ -94,14 +114,14 @@ namespace Giffer
 
         private void NextImage()
         {
-            if (Images.Length == 0 || Images.All(i => i == null)) return;
+            if (Images.Count == 0 || Images.All(i => i == null)) return;
             Image = Images.GetNext();
             while (Image == null) Image = Images.GetNext();
         }
 
         private void PrevImage()
         {
-            if (Images.Length == 0 || Images.All(i => i == null)) return;
+            if (Images.Count == 0 || Images.All(i => i == null)) return;
             Image = Images.GetPrevious();
             while (Image == null) Image = Images.GetPrevious();
         }
@@ -113,7 +133,9 @@ namespace Giffer
         private void btn_ChangeDirectory_Click(object sender, RoutedEventArgs e)
         {
             media.Source = Uri;
-            var dlg = new FolderBrowserDialog {SelectedPath = string.IsNullOrEmpty(Path) ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Gallery") : Path};
+            var path = Path;
+            while (!string.IsNullOrEmpty(path) && !Directory.Exists(path)) path = System.IO.Path.GetDirectoryName(path);
+            var dlg = new FolderBrowserDialog {SelectedPath = string.IsNullOrEmpty(path) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : path};
             if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             Path = dlg.SelectedPath;
             Reset();
@@ -121,8 +143,12 @@ namespace Giffer
 
         private void image_MediaEnded(object sender, RoutedEventArgs e)
         {
-            media.Position = new TimeSpan(0, 0, 1);
-            media.Play();
+            if (_autoPlay) NextImage();
+            else
+            {
+                media.Position = new TimeSpan(0, 0, 1);
+                media.Play();
+            }
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -156,6 +182,10 @@ namespace Giffer
         private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             switch (e.Key) {
+                case Key.P:
+                case Key.A:
+                    _autoPlay = !_autoPlay;
+                    break;
                 case Key.Home:
                 case Key.PageUp:
                 case Key.Left:
@@ -164,7 +194,6 @@ namespace Giffer
                 case Key.End:
                 case Key.Right:
                 case Key.Space:
-                case Key.Enter:
                 case Key.PageDown:
                     NextImage();
                     break;
@@ -173,6 +202,7 @@ namespace Giffer
                     break;
                 case Key.F11:
                 case Key.Up:
+                case Key.Enter:
                     ToggleFullscreen();
                     break;
                 case Key.Escape:
@@ -180,7 +210,7 @@ namespace Giffer
                     break;
                 case Key.Delete:
                 case Key.Back:
-                    var index = Array.IndexOf(Images, Image);
+                    var index = Images.IndexOf(Image);
                     Images[index] = null;
                     FileSystem.DeleteFile(Image.FullName, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
                     NextImage();
